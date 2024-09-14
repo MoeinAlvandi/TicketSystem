@@ -14,3 +14,9 @@ spring:
       ddl-auto: create
 server:
   port: 7070
+ticketsystem:
+  app:
+    jwtSecret: ===================jhsajkdjdsjfdsfsdgsgsdfjkdfs===============
+    jwtExpirationMs: 86500000
+
+
