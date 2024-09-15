@@ -10,7 +10,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 public class UserDetailImpl implements UserDetails {
     private Integer id;
     private String username;
@@ -28,7 +27,7 @@ public class UserDetailImpl implements UserDetails {
     }
     public static UserDetailImpl build(User user) {
         List<GrantedAuthority> authorities = user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName().name()))
+                .map(role -> new SimpleGrantedAuthority(role.getTitle().name()))
                 .collect(Collectors.toList());
 
         return new UserDetailImpl(
