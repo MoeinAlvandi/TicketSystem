@@ -10,6 +10,6 @@ public class SignupRequest {
     private String username;
     private String password;
     private String email;
-    private Set<Role> roles=new HashSet<>();
+    private Set<String> roles;
 
 }
