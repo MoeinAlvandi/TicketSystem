@@ -1,4 +1,4 @@
-package com.javatar.practice.ticketsystem.security;
+package com.javatar.practice.ticketsystem.security.jwt;
 
 
 import io.jsonwebtoken.Jwts;

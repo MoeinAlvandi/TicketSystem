@@ -6,8 +6,7 @@ import com.javatar.practice.ticketsystem.model.Role;
 import com.javatar.practice.ticketsystem.model.User;
 import com.javatar.practice.ticketsystem.repository.RoleRepository;
 import com.javatar.practice.ticketsystem.repository.UserRepository;
-import com.javatar.practice.ticketsystem.security.Jwtutils;
-import com.javatar.practice.ticketsystem.security.service.UserDetailImpl;
+import com.javatar.practice.ticketsystem.security.jwt.Jwtutils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,11 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("auth")
