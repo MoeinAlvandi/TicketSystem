@@ -2,6 +2,7 @@ package com.javatar.practice.ticketsystem.security.service;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.javatar.practice.ticketsystem.model.User;
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,6 +11,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Data
 public class UserDetailImpl implements UserDetails {
     private Integer id;
     private String username;

@@ -13,14 +13,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashSet;
 import java.util.Set;
-
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("auth")
 public class AuthController {
@@ -34,6 +31,8 @@ public class AuthController {
     AuthenticationManager authenticationManager;
     @Autowired
     Jwtutils jwtutils;
+
+    @CrossOrigin
     @PostMapping("signup")
     public User signup (@RequestBody SignupRequest signupRequest) {
 User user = new User(
@@ -44,16 +43,21 @@ User user = new User(
         Set<Role> roles=new HashSet<>();
         for(String role:rolesrequst){
             if(role.equals("admin")){
-                roles.add(roleRepository.findByName(ERole.ROLE_ADMIN).get());
+
+                Role adminRole = roleRepository.findByTitle(ERole.ROLE_ADMIN)
+                        .orElseThrow(() -> new RuntimeException("Error: ole is not found."));
+                roles.add(adminRole);
 
             } else if (role.equals("user")) {
-                roles.add(roleRepository.findByName(ERole.ROLE_USER).get());
+
+
+                roles.add(roleRepository.findByTitle(ERole.ROLE_USER).get());
 
             } else if (role.equals("mod")) {
-                roles.add(roleRepository.findByName(ERole.ROLE_MODERATOR).get());
+                roles.add(roleRepository.findByTitle(ERole.ROLE_MODERATOR).get());
 
             }else {
-                roles.add(roleRepository.findByName(ERole.ROLE_USER).get());
+                roles.add(roleRepository.findByTitle(ERole.ROLE_USER).get());
 
             }
 
@@ -61,9 +65,13 @@ User user = new User(
         user.setRoles(roles);
         return userRepository.save(user);
     }
+    @CrossOrigin
     @PostMapping("signin")
     public String signin(@RequestBody User signinRequest ) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signinRequest.getUsername(), signinRequest.getPassword()));
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        signinRequest.getUsername(),
+                        signinRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);//login is ...
         String jwt = jwtutils.generateJwtToken(authentication);
         //UserDetailImpl userDetail = (UserDetailImpl) authentication.getPrincipal();

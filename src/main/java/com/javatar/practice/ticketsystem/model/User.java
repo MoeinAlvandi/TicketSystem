@@ -1,7 +1,9 @@
 package com.javatar.practice.ticketsystem.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -9,6 +11,8 @@ import java.util.Set;
 @Data
 @Entity
 @Table(name="Tb_user")
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
