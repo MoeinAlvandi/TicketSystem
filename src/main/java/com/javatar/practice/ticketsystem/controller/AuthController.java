@@ -35,7 +35,7 @@ public class AuthController {
     @CrossOrigin
     @PostMapping("signup")
     public User signup (@RequestBody SignupRequest signupRequest) {
-User user = new User(
+        User user = new User(
         signupRequest.getUsername(),
         encoder.encode(signupRequest.getPassword()),
         signupRequest.getEmail());

@@ -64,6 +64,8 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth ->
                                 auth.requestMatchers("/**").permitAll()
                         .requestMatchers("/userMng/**").permitAll()
+                        .requestMatchers("/AddNewTicket").authenticated()
+
 //                                .requestMatchers("/index").permitAll()
 //                                .requestMatchers("/swagger-ui/**").permitAll()
 //                                .requestMatchers("/v3/api-docs/**").permitAll()
