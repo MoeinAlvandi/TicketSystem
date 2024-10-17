@@ -1,9 +1,11 @@
 package com.javatar.practice.ticketsystem.service;
 
 import com.javatar.practice.ticketsystem.data.TicketViewModel;
+import com.javatar.practice.ticketsystem.model.Message;
 import com.javatar.practice.ticketsystem.model.Ticket;
 import com.javatar.practice.ticketsystem.model.TicketStatus;
 import com.javatar.practice.ticketsystem.model.User;
+import com.javatar.practice.ticketsystem.repository.MessageRepository;
 import com.javatar.practice.ticketsystem.repository.TicketRipository;
 import com.javatar.practice.ticketsystem.repository.TicketStatusRepository;
 import com.javatar.practice.ticketsystem.repository.UserRepository;
@@ -28,6 +30,9 @@ public class TicketService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private MessageRepository messageRepository;
+
     public void InsertTicket(Ticket ticket,int UserID)
     {
         Optional<TicketStatus> ticketStatus=ticketStatusRepository.findById(1);
@@ -39,6 +44,19 @@ public class TicketService {
         ticket.setLastChangeDate(new Date());
 
         ticketRipository.save(ticket);
+
+
+        Message message = new Message();
+        message.setMessageText(ticket.getDescription());
+        message.setCreateDate(new Date());
+        message.setLastChangeDate(new Date());
+        message.setUserID(UserID);
+
+        message.setTicket(ticket);
+
+        messageRepository.save(message);
+
+
     }
 
     public List<TicketViewModel> GetAllTicket_ByUserID(User user) throws ParseException {
@@ -65,4 +83,8 @@ public class TicketService {
         return result;
     }
 
+
+    public Optional<Ticket> GetTicket_ByID(int TicketID){
+        return ticketRipository.findById(TicketID);
+    }
 }
