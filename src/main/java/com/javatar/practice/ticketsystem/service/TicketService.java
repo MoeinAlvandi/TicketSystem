@@ -40,6 +40,7 @@ public class TicketService {
 
         Optional<User> user =userRepository.findById(UserID);
         ticket.setUser(user.get());
+
         ticket.setCreateDate(new Date());
         ticket.setLastChangeDate(new Date());
 
@@ -59,7 +60,7 @@ public class TicketService {
 
     }
 
-    public List<TicketViewModel> GetAllTicket_ByUserID(User user) throws ParseException {
+    public List<TicketViewModel> GetAllTicket_ByUser(User user) throws ParseException {
 
         List<Ticket> tickets=ticketRipository.getTicketByUser(user);
         List<TicketViewModel> result=new ArrayList<>();
@@ -69,6 +70,7 @@ public class TicketService {
             tmp=new TicketViewModel();
             tmp.setID(ticket.getId());
             tmp.setSubject(ticket.getSubject());
+
             TicketStatus ticketStatus=ticket.getTicketStatus();
             tmp.setStatusID(ticketStatus.getId());
             tmp.setStatusTitle(ticketStatus.getTitle());

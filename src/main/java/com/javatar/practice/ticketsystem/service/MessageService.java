@@ -24,7 +24,7 @@ public class MessageService {
     private UserRepository userRepository;
 
     public List<MessageViewModel> GetAllMessages_ByTicketID(Ticket ticket) throws ParseException {
-        List<Message> AllTicketMessage=messageRepository.findAllByTicket(ticket);
+        List<Message> AllTicketMessage=messageRepository.findAllByTicket_OrderByCreateDate(ticket);
         List<MessageViewModel> result=new ArrayList<>();
         MessageViewModel tmp;
         for(Message m:AllTicketMessage){
@@ -40,5 +40,9 @@ public class MessageService {
           result.add(tmp);
         }
         return result;
+    }
+
+    public void InsertMessage(Message message) throws ParseException {
+        messageRepository.save(message);
     }
 }
