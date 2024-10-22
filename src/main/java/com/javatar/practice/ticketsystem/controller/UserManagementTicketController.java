@@ -191,7 +191,7 @@ public class UserManagementTicketController {
 
     }
 
-@PostMapping("AddNewMessage")
+    @PostMapping("AddNewMessage")
     public ResponseEntity<?> AddNewMessage(@RequestHeader("Authorization") String authHeader, @RequestBody NewMessageViewModel model) throws ParseException {
         try{
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -276,4 +276,81 @@ public class UserManagementTicketController {
 
     }
 
+    @GetMapping("CloseTicket/{ticketID}")
+    public ResponseEntity<?> CloseTicket(@RequestHeader("Authorization") String authHeader, @PathVariable("ticketID") Integer ticketID) throws ParseException {
+        try{
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                return ResponseEntity.badRequest().body("لطفا توکن را به درستی وارد کنید");
+
+            }
+            String token = authHeader.substring(7);
+
+
+            String Username= jwtutils.getUsernameFromJwtToken(token);
+            if(!Username.equals(""))
+            {
+                User user =userService.GetUser_ByUsername(Username).get();
+
+                if(user!=null)
+                {
+                    Optional<Ticket> ticket=ticketService.GetTicket_ByID(ticketID);
+                    if(ticket.get()!=null)
+                    {
+
+                        Optional<TicketStatus> statusClose=ticketStatusService.getTicketStatusByID(2);//close
+
+                        if(ticket.get().getTicketStatus()!=statusClose.get())
+                        {
+                            //moshkel nist
+                            User userTicket=ticket.get().getUser();
+                            if(userTicket!=null){
+                                if(userTicket==user){
+
+                                    ticket.get().setTicketStatus(statusClose.get());
+                                    ticketService.UpdateTicket(ticket.get());
+
+                                    return ResponseEntity.ok().body("اطلاعات با موفقیت ثبت شد");
+                                    //return ResponseEntity.badRequest().body("دسترسی غیر مجاز");
+
+                                }
+                                else {
+                                    return ResponseEntity.badRequest().body("دسترسی غیر مجاز");
+                                }
+                            }
+                            else {
+                                return ResponseEntity.badRequest().body("خطای سیستمی");
+                            }
+                        }
+                        else {
+                            //close
+                            return ResponseEntity.badRequest().body("تیکت مد نظر شما بسته شده است.");
+
+                        }
+
+
+
+                    }
+                    else
+                    {
+                        return ResponseEntity.badRequest().body("تیکت پیدا نشد");
+                    }
+
+                }
+                else
+                {
+                    return ResponseEntity.badRequest().body("دسترسی غیر مجاز");
+
+                }
+
+            }
+            else
+            {
+                return ResponseEntity.badRequest().body("دسترسی غیر مجاز");
+
+            }
+        }
+        catch (Exception ex){
+            return ResponseEntity.badRequest().body("خطای سیستمی"+ " "+ex.toString());
+        }
+    }
 }

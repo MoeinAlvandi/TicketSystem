@@ -89,4 +89,10 @@ public class TicketService {
     public Optional<Ticket> GetTicket_ByID(int TicketID){
         return ticketRipository.findById(TicketID);
     }
+
+    public void UpdateTicket(Ticket ticket)
+    {
+        ticketRipository.save(ticket);
+    }
+
 }
