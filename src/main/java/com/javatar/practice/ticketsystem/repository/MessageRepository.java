@@ -12,4 +12,6 @@ public interface MessageRepository extends JpaRepository<Message,Integer> {
 
 
     List<Message> findAllByTicket_OrderByCreateDate(Ticket ticket);
+
+    Message findFirstByTicket_OrderByCreateDateDesc(Ticket ticket);
 }

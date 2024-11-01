@@ -62,8 +62,9 @@ public class WebSecurityConfig {
                 .exceptionHandling(exp -> exp.authenticationEntryPoint(authEntryPointJwt))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
-                                auth.requestMatchers("/**").permitAll()
+                        auth.requestMatchers("/**").permitAll()
                         .requestMatchers("/userMng/**").permitAll()
+
                         .requestMatchers("/AddNewTicket").authenticated()
 
 //                                .requestMatchers("/index").permitAll()

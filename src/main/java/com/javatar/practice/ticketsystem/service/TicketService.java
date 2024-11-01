@@ -1,5 +1,7 @@
 package com.javatar.practice.ticketsystem.service;
 
+import ch.qos.logback.core.joran.spi.ElementSelector;
+import com.javatar.practice.ticketsystem.data.AdminTicketViewModel;
 import com.javatar.practice.ticketsystem.data.TicketViewModel;
 import com.javatar.practice.ticketsystem.model.Message;
 import com.javatar.practice.ticketsystem.model.Ticket;
@@ -13,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -93,6 +97,61 @@ public class TicketService {
     public void UpdateTicket(Ticket ticket)
     {
         ticketRipository.save(ticket);
+    }
+
+    public List<AdminTicketViewModel> GetAllAdminTicket_ByStatus(TicketStatus ticketStatus) throws ParseException {
+
+        List<Ticket> tickets=null;
+        if(ticketStatus!=null)
+        {
+            tickets=ticketRipository.getTicketsByTicketStatus(ticketStatus);//open
+        }else
+        {
+            tickets=ticketRipository.findAll();
+        }
+
+
+        if(tickets!=null)
+        {
+            List<AdminTicketViewModel> result=new ArrayList<>();
+
+            AdminTicketViewModel tmp;
+
+            for(Ticket ticket:tickets){
+                tmp=new AdminTicketViewModel();
+
+                tmp.setTicketID(ticket.getId());
+
+                tmp.setUserName(ticket.getUser().getUsername());
+
+                Message message=messageRepository.findFirstByTicket_OrderByCreateDateDesc(ticket);
+                if(message!=null)
+                {
+                    tmp.setLastMessage(message.getMessageText());
+                }
+                else
+                {
+                    tmp.setLastMessage("Not found Any Message");
+                }
+
+
+
+                LocalDate localDate = ticket.getCreateDate().toInstant()
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDate();
+                tmp.setSendTime(DateConvertor.DiffCalc(localDate));
+                result.add(tmp);
+            }
+        return result;
+
+        }
+        else {
+            //agar null bood
+
+            return null;
+        }
+
+
     }
 
 }

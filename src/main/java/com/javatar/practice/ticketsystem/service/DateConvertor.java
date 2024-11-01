@@ -1,10 +1,12 @@
 package com.javatar.practice.ticketsystem.service;
 
 import com.github.mfathi91.time.PersianDate;
+import org.springframework.security.core.parameters.P;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -46,5 +48,24 @@ public class DateConvertor {
 
         String result=persianDate.toString()+"-"+ hours + ":" + minutes + ":" + seconds;
         return result;
+    }
+
+
+    public static String DiffCalc(LocalDate EnterDate) throws ParseException {
+
+
+        LocalDate currentDate = LocalDate.now();
+
+
+      long result=  ChronoUnit.DAYS.between(EnterDate, currentDate);
+
+        if(result<30)
+        {
+            return result+ "روز قبل ";
+        }
+        else {
+            long result2=result / 30;
+            return result+ "ماه قبل ";
+        }
     }
 }
