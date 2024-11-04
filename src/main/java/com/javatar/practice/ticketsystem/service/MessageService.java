@@ -1,5 +1,6 @@
 package com.javatar.practice.ticketsystem.service;
 
+import com.javatar.practice.ticketsystem.data.AdminMessageViewModel;
 import com.javatar.practice.ticketsystem.data.MessageViewModel;
 import com.javatar.practice.ticketsystem.model.Message;
 import com.javatar.practice.ticketsystem.model.Ticket;
@@ -41,6 +42,31 @@ public class MessageService {
         }
         return result;
     }
+
+
+    public List<AdminMessageViewModel> GetAllMessages_ByTicketforAdmin(Ticket ticket) throws ParseException {
+        List<Message> AllTicketMessage=messageRepository.findAllByTicket_OrderByCreateDate(ticket);
+        List<AdminMessageViewModel> result=new ArrayList<>();
+        AdminMessageViewModel tmp;
+        for(Message m:AllTicketMessage){
+            tmp=new AdminMessageViewModel();
+            tmp.setId(m.getId());
+            tmp.setMessageText(m.getMessageText());
+            //tmp.setCreateDate(m.getCreateDate());
+            tmp.setMessageDate(DateConvertor.toShamsi_withTime(m.getCreateDate().toString()));
+
+            Optional<User> user=userRepository.findById(m.getUserID());
+            tmp.setUserID(user.get().getId());
+            tmp.setUserName(user.get().getUsername());
+
+            //todo How can Find Admin USer
+            tmp.setIsAdmin(false);
+
+            result.add(tmp);
+        }
+        return result;
+    }
+
 
     public void InsertMessage(Message message) throws ParseException {
         messageRepository.save(message);
