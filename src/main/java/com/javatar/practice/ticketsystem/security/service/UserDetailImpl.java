@@ -28,6 +28,16 @@ public class UserDetailImpl implements UserDetails {
         this.authorities = authorities;
     }
     public static UserDetailImpl build(User user) {
+        User userDetail = new User();
+        userDetail.setId(user.getId());
+        userDetail.setUsername(user.getUsername());
+        userDetail.setPassword(user.getPassword());
+        userDetail.setEmail(user.getEmail());
+
+        User user1 =User.builder().id(1).username("sss").password("ssf").email("sd").build();
+
+
+
         List<GrantedAuthority> authorities = user.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getTitle().name()))
                 .collect(Collectors.toList());

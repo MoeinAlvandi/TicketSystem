@@ -39,7 +39,7 @@ public class TicketService {
 
     public void InsertTicket(Ticket ticket,int UserID)
     {
-        Optional<TicketStatus> ticketStatus=ticketStatusRepository.findById(1);
+        Optional<TicketStatus> ticketStatus=ticketStatusRepository.findById(3);
         ticket.setTicketStatus(ticketStatus.get());
 
         Optional<User> user =userRepository.findById(UserID);

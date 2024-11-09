@@ -19,6 +19,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -46,8 +50,8 @@ public class AdminManagementController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
-    @GetMapping("GetTicketsAdmin/{statusID}")
-    public ResponseEntity<?> GetTicketsAdmin(@PathVariable("statusID") Integer statusID) throws ParseException {
+    @GetMapping("GetTicketsAdmin")
+    public ResponseEntity<?> GetTicketsAdmin(@RequestParam("statusID") Integer statusID) throws ParseException {
 
         try {
             if (statusID > 0) {
@@ -80,9 +84,9 @@ public class AdminManagementController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
-    @GetMapping("GetMessagesAdmin/{ticketID}")
+    @GetMapping("GetMessagesAdmin")
     //QueryString
-    public ResponseEntity<?> GetMessagesAdmin(@PathVariable("ticketID") Integer ticketID) throws ParseException {
+    public ResponseEntity<?> GetMessagesAdmin(@RequestParam("ticketID") Integer ticketID) throws ParseException {
 
         try {
             if (ticketID > 0) {
@@ -114,6 +118,10 @@ public class AdminManagementController {
 
     }
 
+
+
+
+
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("AnswerTicketAdmin")
@@ -121,6 +129,8 @@ public class AdminManagementController {
     public ResponseEntity<?> AnswerTicketAdmin(@RequestHeader("Authorization") String authHeader, @RequestBody AswerTicketViewModel model) throws ParseException {
 
         try {
+          //  Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
                 return ResponseEntity.badRequest().body("لطفا توکن را به درستی وارد کنید");
 
@@ -147,6 +157,11 @@ public class AdminManagementController {
                             message.setLastChangeDate(new Date());
 
                             messageService.InsertMessage(message);
+
+                            Optional<TicketStatus> ticketStatus = ticketStatusService.getTicketStatusByID(1);//open ya pasokh dade shod
+                            ticket.get().setTicketStatus(ticketStatus.get());
+                            ticket.get().setLastChangeDate(new Date());
+                            ticketService.UpdateTicket(ticket.get());
 
                             return ResponseEntity.ok().body("اطلاعات با موفقیت ثبت شد");
 
@@ -179,6 +194,39 @@ public class AdminManagementController {
 
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PostMapping("CloseTicketByAdmin/{ticketID}")
+    public ResponseEntity<?> CloseTicketByAdmin(@PathVariable("ticketID") Integer ticketID) throws ParseException {
+        try {
+            if (ticketID > 0) {
+                Optional<Ticket> ticket = ticketService.GetTicket_ByID(ticketID);
+                if (ticket.isPresent()) {
+                    Optional<TicketStatus> ticketStatusClose = ticketStatusService.getTicketStatusByID(2);//close
+                    if (ticket.get().getTicketStatus().getId() != 2) {
+                        //close  nabood
+                        ticket.get().setTicketStatus(ticketStatusClose.get());
+                        ticket.get().setLastChangeDate(new Date());
+                        ticketService.UpdateTicket(ticket.get());
+                        return ResponseEntity.ok().body("تیکت با موفقیت بسته شد.");
+                    }
+                    else {
+                        return ResponseEntity.badRequest().body("تیکت شما قبلا بسته شده است.");
+
+                    }
+
+                } else {
+                    return ResponseEntity.badRequest().body("تیکت پیدا نشد");
+
+                }
+            } else {
+                return ResponseEntity.badRequest().body("تیکت پیدا نشد");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("خطا : " + e.toString());
+        }
+
+    }
 
 }
 

@@ -229,6 +229,12 @@ public class UserManagementTicketController {
 
                                     messageService.InsertMessage(message);
 
+                                    Optional<TicketStatus> ticketStatus = ticketStatusService.getTicketStatusByID(3);//wait
+                                    ticket.get().setTicketStatus(ticketStatus.get());
+                                    ticket.get().setLastChangeDate(new Date());
+                                    ticketService.UpdateTicket(ticket.get());
+
+
                                     return ResponseEntity.ok().body("اطلاعات با موفقیت ثبت شد");
                                     //return ResponseEntity.badRequest().body("دسترسی غیر مجاز");
 
